@@ -25,6 +25,10 @@ function Bookmarklet() {
       b.setCursor();
       this.preventDefault();
     },
+    "37": function() { kp_actions["72"](); },
+    "38": function() { kp_actions["75"](); },
+    "39": function() { kp_actions["76"](); },
+    "40": function() { kp_actions["74"](); },
     "46": function() {
       // delete character (del)
       var chars = b.$ta.val().split(""),
@@ -40,6 +44,11 @@ function Bookmarklet() {
     },
     "72": function() {
       // left (h), screen top (H)
+      if (this.shiftKey) {
+      }
+      else {
+        b.setCursor(b.getCursor() - 1);
+      }
     },
     "73": function() {
       // insert mode (i)
@@ -58,6 +67,11 @@ function Bookmarklet() {
     },
     "76": function() {
       // right (l), screen bottom (L)
+      if (this.shiftKey) {
+      }
+      else {
+        b.setCursor(b.getCursor() + 1);
+      }
     },
     "78": function() {
       // new (n)
