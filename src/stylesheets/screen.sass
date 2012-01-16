@@ -1,4 +1,8 @@
 $p: "vim_bookmarklet_"
+= opacity($percentage)
+  opacity: $percentage
+  filter: alpha(opacity=$percentage*100)
+
 #vim_bookmarklet
   position: fixed
   left: 0
@@ -67,4 +71,13 @@ $p: "vim_bookmarklet_"
     line-height: 16px
     color: transparent
     background: transparent url("icon_cmd.png") 50% 50% no-repeat
-
+##{$p}indicator
+  display: none
+  position: absolute
+  z-index: 10000000
+  padding: 3px 5px
+  font: bold 11px Helvetica, Arial, sans-serif
+  text-transform: uppercase
+  color: #ffffff
+  +opacity(.5)
+  background: #000000

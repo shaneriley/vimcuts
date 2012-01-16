@@ -69,7 +69,7 @@ function Bookmarklet() {
     $modal_layer: $(),
     $indicator: $(),
     buffer: "",
-    mode: "insert",
+    mode: "i",
     prepBookmarkletContainer: function() {
       b.$el = $("<div />", { id: b.p.replace(/_$/, "") }).appendTo(document.body);
     },
@@ -112,7 +112,7 @@ function Bookmarklet() {
     moveIndicator: function() {
       b.$indicator.css({
         left: b.$ta.offset().left,
-        bottom: b.$ta.offset().top + b.$ta.outerHeight()
+        bottom: $(window).height() - b.$ta.offset().top - b.$ta.outerHeight()
       });
     },
     openModal: function() {
@@ -129,21 +129,23 @@ function Bookmarklet() {
         n: "normal",
         v: "visual"
       };
-      b.mode = modes[m];
-      b.$indicator.text(m);
+      b.mode = m;
+      b.$indicator.text(modes[m]).show();
     },
     keypress: function(e) {
       var $e = $(e.target);
       if (!$e.is("textarea") && b.$modal.is(":hidden")) { return; }
-      if (b.mode === "insert" && b.$modal.is(":hidden") && e.keyCode !== 27) { return; }
-      if (b.mode !== "insert") { e.preventDefault(); }
+      if (b.mode === "i" && b.$modal.is(":hidden") && e.keyCode !== 27) { return; }
+      if (b.mode !== "i") { e.preventDefault(); }
       kp_actions[e.keyCode in kp_actions ? e.keyCode : "default"].apply(e);
     },
-    focus: function(e) {
-      var $e = $(e.target);
-      if (!$e.is("textarea")) { return; }
-      b.$ta = $e;
+    focus: function() {
+      b.switchMode(b.mode);
+      b.$ta = $(this);
       b.moveIndicator();
+    },
+    blur: function() {
+      b.$indicator.hide();
     },
     init: function() {
       for (var v in b) {
@@ -152,7 +154,8 @@ function Bookmarklet() {
         }
       }
       $(document).bind("keydown.vim_bookmarklet", b.keypress)
-        .bind("focus.vim_bookmarklet", b.focus);
+        .find("textarea").bind("focus.vim_bookmarklet", b.focus)
+        .bind("blur.vim_bookmarklet", b.blur);
     }
   };
 
