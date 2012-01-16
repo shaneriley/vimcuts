@@ -9,6 +9,9 @@ function Bookmarklet() {
     "esc": "Cancels current action",
     "<span class='cmd'>Cmd</span>-enter": "Saves currently active entry"
   };
+  Array.prototype.excise = function(s, e) {
+    return $.merge(this.slice(0, s), this.slice(s + (e || 1)));
+  };
   var kp_actions = {
     "13": function() {
     },
@@ -19,7 +22,15 @@ function Bookmarklet() {
         return;
       }
       b.switchMode("n");
+      b.setCursor();
       this.preventDefault();
+    },
+    "46": function() {
+      // delete character (del)
+      var chars = b.$ta.val().split(""),
+          cursor_pos = b.getCursor();
+      b.$ta.val(chars.excise(cursor_pos).join(""));
+      b.setCursor(cursor_pos);
     },
     "68": function() {
       // delete (d)
@@ -33,6 +44,7 @@ function Bookmarklet() {
     "73": function() {
       // insert mode (i)
       b.switchMode("i");
+      b.resetCursor();
     },
     "74": function() {
       // down (j), join lines (J)
@@ -131,6 +143,16 @@ function Bookmarklet() {
       };
       b.mode = m;
       b.$indicator.text(modes[m]).show();
+    },
+    setCursor: function(pos) {
+      var cursor_pos = pos || b.getCursor();
+      b.$ta[0].setSelectionRange(cursor_pos, cursor_pos + 1);
+    },
+    getCursor: function() {
+      return b.$ta[0].selectionStart;
+    },
+    resetCursor: function() {
+      b.$ta[0].selectionEnd = b.getCursor();
     },
     keypress: function(e) {
       var $e = $(e.target);
