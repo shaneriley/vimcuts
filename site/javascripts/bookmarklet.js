@@ -25,10 +25,10 @@ function Bookmarklet() {
       b.setCursor();
       this.preventDefault();
     },
-    "37": function() { kp_actions["72"](); },
-    "38": function() { kp_actions["75"](); },
-    "39": function() { kp_actions["76"](); },
-    "40": function() { kp_actions["74"](); },
+    "37": function() { kp_actions["72"].apply(this); },
+    "38": function() { kp_actions["75"].apply(this); },
+    "39": function() { kp_actions["76"].apply(this); },
+    "40": function() { kp_actions["74"].apply(this); },
     "46": function() {
       // delete character (del)
       var chars = b.$ta.val().split(""),
@@ -44,10 +44,8 @@ function Bookmarklet() {
     },
     "72": function() {
       // left (h), screen top (H)
-      if (this.shiftKey) {
-      }
-      else {
-        b.setCursor(b.getCursor() - 1);
+      if (b.getCursor()) {
+        b.setCursor(this.shiftKey ? 0 : b.getCursor() - 1);
       }
     },
     "73": function() {
@@ -67,11 +65,8 @@ function Bookmarklet() {
     },
     "76": function() {
       // right (l), screen bottom (L)
-      if (this.shiftKey) {
-      }
-      else {
-        b.setCursor(b.getCursor() + 1);
-      }
+      if (b.getCursor() === b.$ta.val().length - 1) { return; }
+      b.setCursor(this.shiftKey ? b.$ta.val().length - 1 : b.getCursor() + 1);
     },
     "78": function() {
       // new (n)
@@ -159,7 +154,7 @@ function Bookmarklet() {
       b.$indicator.text(modes[m]).show();
     },
     setCursor: function(pos) {
-      var cursor_pos = pos || b.getCursor();
+      var cursor_pos = isNaN(pos) ? b.getCursor() : pos;
       b.$ta[0].setSelectionRange(cursor_pos, cursor_pos + 1);
     },
     getCursor: function() {
