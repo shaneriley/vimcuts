@@ -275,21 +275,32 @@ function Bookmarklet() {
     resetCursor: function() {
       b.$ta[0].selectionEnd = b.getCursor();
     },
+    checkKeypressPermission: function(e) {
+      var permitted = [9, 13, 27];
+      if (!e.metaKey && $.inArray(e.keyCode, permitted) === -1) { e.preventDefault(); }
+    },
     keypress: function(e) {
       var $e = $(e.target);
       if (!$e.is("textarea") && b.$modal.is(":hidden")) { return; }
       if (b.mode === "i" && b.$modal.is(":hidden") && e.keyCode !== 27) { return; }
-      if (b.mode !== "i") { e.preventDefault(); }
+      if (b.mode !== "i") { b.checkKeypressPermission(e); }
       if (b.current_command) { kp_actions[b.current_command].apply(e); }
       else { kp_actions[e.keyCode in kp_actions ? e.keyCode : "default"].apply(e); }
     },
     focus: function() {
       b.switchMode(b.mode);
       b.$ta = $(this);
+      b.$ta.data("cssText", b.$ta[0].style.cssText);
+      b.$ta.css({
+        font: "normal 14px 'Courier New', Courier, monospace",
+        width: b.$ta.width(),
+        height: b.$ta.height()
+      });
       b.moveIndicator();
     },
     blur: function() {
       b.$indicator.hide();
+      b.$ta[0].style.cssText = b.$ta.data("cssText");
     },
     init: function() {
       for (var v in b) {
