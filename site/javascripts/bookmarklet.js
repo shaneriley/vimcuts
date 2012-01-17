@@ -9,9 +9,58 @@ function Bookmarklet() {
     "esc": "Cancels current action",
     "<span class='cmd'>Cmd</span>-enter": "Saves currently active entry"
   };
+  var keys = {
+    normal: {
+      106: "*",
+      107: "-",
+      109: "+",
+      186: ";",
+      187: "=",
+      188: ",",
+      189: "-",
+      190: ".",
+      191: "/",
+      192: "`",
+      219: "[",
+      220: "\\",
+      221: "]",
+      222: "'"
+    },
+    shift: {
+      48: ")",
+      49: "!",
+      50: "@",
+      51: "#",
+      52: "$",
+      53: "%",
+      54: "^",
+      55: "&",
+      56: "*",
+      57: "(",
+      106: "*",
+      107: "-",
+      109: "+",
+      186: ":",
+      187: "+",
+      188: "<",
+      189: "_",
+      190: ">",
+      191: "?",
+      192: "~",
+      219: "{",
+      220: "|",
+      221: "}",
+      222: "\""
+    }
+  }
   Array.prototype.excise = function(s, e) {
     return $.merge(this.slice(0, s), this.slice(s + (e || 1)));
   };
+  Number.prototype.within = function(s, e) {
+    var t;
+    if (s > e) { t = s; s = e; e = t; }
+    return this >= s && this <= e;
+  }
   var kp_actions = {
     "13": function() {
     },
@@ -102,10 +151,19 @@ function Bookmarklet() {
     },
     "82": function() {
       var s = b.$ta.val(),
-          pos = b.getCursor();
-      if (b.current_command) {
-        b.$ta.val(s.substring(0, pos) + String.fromCharCode(this.keyCode) + s.substring(pos + 1));
+          pos = b.getCursor(),
+          rejected = [12, 16, 17, 18, 20, 33, 34, 35, 36, 37, 38, 39, 40, 46, 91],
+          keycode = this.keyCode,
+          char;
+      if (!this.shiftKey && this.keyCode.within(65, 90)) { keycode += 32; }
+      char = String.fromCharCode(keycode);
+      if (this.keyCode in keys[this.shiftKey ? "shift" : "normal"]) {
+        char = keys[(this.shiftKey ? "shift" : "normal")][this.keyCode];
+      }
+      if (b.current_command && $.inArray(this.keyCode, rejected) === -1) {
+        b.$ta.val(s.substring(0, pos) + char + s.substring(pos + 1));
         b.setCursor(pos);
+        b.current_command = 0;
       }
       else { b.current_command = 82; }
     },
