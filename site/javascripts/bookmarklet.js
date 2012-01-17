@@ -77,6 +77,19 @@ function Bookmarklet() {
         b[(b.$modal.is(":visible") ? "close" : "open") + "Modal"]();
         return;
       }
+      else {
+        var l = b.getLine() - 1,
+            cursor_pos = b.getCursor(),
+            lines = b.$ta.val().split("\n");
+        if (l) {
+          if (lines[l - 1].length <= b.getTextBeforeCursor().length) {
+            b.setCursor(cursor_pos - b.getTextBeforeCursor().length - 2);
+          }
+          else {
+            b.setCursor(cursor_pos - lines[l - 1].length - 1);
+          }
+        }
+      }
     },
     "76": function() {
       // right (l), screen bottom (L)
