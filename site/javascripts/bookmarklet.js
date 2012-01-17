@@ -55,6 +55,21 @@ function Bookmarklet() {
     },
     "74": function() {
       // down (j), join lines (J)
+      if (this.shiftKey) {
+      }
+      else {
+        var l = b.getLine(),
+            cursor_pos = b.getCursor(),
+            lines = b.$ta.val().split("\n");
+        if (b.getLineCount() > l) {
+          if (lines[l].length <= b.getTextBeforeCursor().length) {
+            b.setCursor(cursor_pos + b.getTextAfterCursor().length + lines[l].length);
+          }
+          else {
+            b.setCursor(cursor_pos + lines[l - 1].length + 1);
+          }
+        }
+      }
     },
     "75": function() {
       // up (k), help (K)
@@ -161,6 +176,21 @@ function Bookmarklet() {
     },
     getCursor: function() {
       return b.$ta[0].selectionStart;
+    },
+    getLine: function() {
+      var v = b.$ta.val();
+      return v.split("").slice(0, b.getCursor()).join("").split("\n").length;
+    },
+    getLineCount: function() {
+      return b.$ta.val().split("\n").length;
+    },
+    getTextBeforeCursor: function() {
+      var s = b.$ta.val().split("").slice(0, b.getCursor()).join("");
+      return /\n/.test(s) ? /\n(.*)$/.exec(s)[1] : s;
+    },
+    getTextAfterCursor: function() {
+      var s = b.$ta.val().split("").slice(b.getCursor()).join("");
+      return /\n/.test(s) ? /^(.*)\n/.exec(s)[1] : s;
     },
     resetCursor: function() {
       b.$ta[0].selectionEnd = b.getCursor();
