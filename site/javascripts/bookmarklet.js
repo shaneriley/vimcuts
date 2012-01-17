@@ -74,6 +74,8 @@ function Bookmarklet() {
     },
     "83": function() {
       // (s)
+      kp_actions[46].apply(this);
+      kp_actions[73].apply(this);
     },
     "88": function() { b.$modal.is(":visible") && b.closeModal(); },
     default: function() {
