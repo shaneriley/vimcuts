@@ -100,6 +100,15 @@ function Bookmarklet() {
       // new (n)
       b.buffer = "";
     },
+    "82": function() {
+      var s = b.$ta.val(),
+          pos = b.getCursor();
+      if (b.current_command) {
+        b.$ta.val(s.substring(0, pos) + String.fromCharCode(this.keyCode) + s.substring(pos + 1));
+        b.setCursor(pos);
+      }
+      else { b.current_command = 82; }
+    },
     "83": function() {
       // (s)
       kp_actions[46].apply(this);
@@ -213,7 +222,8 @@ function Bookmarklet() {
       if (!$e.is("textarea") && b.$modal.is(":hidden")) { return; }
       if (b.mode === "i" && b.$modal.is(":hidden") && e.keyCode !== 27) { return; }
       if (b.mode !== "i") { e.preventDefault(); }
-      kp_actions[e.keyCode in kp_actions ? e.keyCode : "default"].apply(e);
+      if (b.current_command) { kp_actions[b.current_command].apply(e); }
+      else { kp_actions[e.keyCode in kp_actions ? e.keyCode : "default"].apply(e); }
     },
     focus: function() {
       b.switchMode(b.mode);
