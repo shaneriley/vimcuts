@@ -71,7 +71,7 @@ function Bookmarklet() {
         return;
       }
       b.switchMode("n");
-      b.setCursor();
+      b.setCursor(b.getCursor() - 1);
       this.preventDefault();
     },
     "37": function() { kp_actions["72"].apply(this); },
@@ -84,6 +84,12 @@ function Bookmarklet() {
           cursor_pos = b.getCursor();
       b.$ta.val(chars.excise(cursor_pos).join(""));
       b.setCursor(cursor_pos);
+    },
+    "65": function() {
+      // append (a), append to EOL (A)
+      if (this.shiftKey) { }
+      else { b.setCursor(b.getCursor() + 1); }
+      kp_actions[73].apply(this);
     },
     "68": function() {
       // delete (d)
