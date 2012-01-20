@@ -4,6 +4,7 @@
   %head
     %title Vim Bookmarklet
     = stylesheets "screen"
+    = javascripts "bookmarklet"
   %body
     = link "Vim Bookmarklet", "javascript:(function(){window.__vim_path='#{root_url}javascripts/';var s=document.createElement('script');s.type='text/javascript';s.src='#{root_url}javascripts/initializer.js';document.getElementsByTagName('head')[0].appendChild(s);})();"
     %textarea(rows="24" cols="170")

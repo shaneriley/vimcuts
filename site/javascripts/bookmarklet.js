@@ -85,9 +85,33 @@ function Bookmarklet() {
       b.$ta.val(chars.excise(cursor_pos).join(""));
       b.setCursor(cursor_pos);
     },
+    "48": function() {
+      // BOL (0)
+      if (this.shiftKey) { }
+      else {
+        b.setCursor(b.getCursor() - b.getTextBeforeCursor().length);
+      }
+    },
+    "52": function() {
+      // EOL ($)
+      if (this.shiftKey) {
+        b.setCursor(b.getCursor() + b.getTextAfterCursor().length - 1);
+      }
+    },
+    "54": function() {
+      // soft BOL (^)
+      var l = b.$ta.val().split("\n")[b.getLine() - 1],
+          str = b.getTextBeforeCursor(),
+          start = b.getCursor() - str.substring(str.search(/\S/)).length;
+      if (this.shiftKey) {
+        b.setCursor(start);
+      }
+    },
     "65": function() {
       // append (a), append to EOL (A)
-      if (this.shiftKey) { }
+      if (this.shiftKey) {
+        b.setCursor(b.getCursor() + b.getTextAfterCursor().length);
+      }
       else { b.setCursor(b.getCursor() + 1); }
       kp_actions[73].apply(this);
     },
